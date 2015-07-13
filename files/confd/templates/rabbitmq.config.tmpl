@@ -1,0 +1,28 @@
+%% -*- mode: erlang -*-
+%% ----------------------------------------------------------------------------
+%% RabbitMQ Configuration File.
+%%
+%% See http://www.rabbitmq.com/configure.html for details.
+%% ----------------------------------------------------------------------------
+[
+		{rabbit, [
+					  {default_user, <<"{{if exists "/rabbitmq/user"}} {{getv "/rabbitmq/user"}} {{else}}rabbit{{end}}">>},
+					  {default_pass, <<"{{if exists "/rabbitmq/password"}} {{getv "/rabbitmq/password"}} {{else}}rabbit{{end}}">>},
+	                  {default_permissions, [<<".*">>, <<".*">>, <<".*">>]},
+	                  {default_user_tags, [administrator]},
+	                  {default_vhost, <<"{{if exists "/rabbitmq/vhost"}} {{getv "/rabbitmq/vhost"}} {{else}}/{{end}}">>},
+	                  {cluster_nodes, { {{if exists "/rabbitmq/cluster/nodes"}} {{getv "/rabbitmq/cluster/nodes"}} {{else}}[]{{end}}, disc}},
+	                  {reverse_dns_lookups, true},
+	                  {cluster_partition_handling, autoheal},
+	                  {heartbeat, 30},
+	                  {log_levels, [
+	                    {connection, info},
+	                    {mirroring, info},
+	                    {federation, info}
+	                  ]}
+	 	]},
+	 	{rabbitmq_management, [
+	                  	{listener, [{port, {{if exists "/rabbit/management/port"}} {{getv "/rabbitmq/management/port"}} {{else}}15672{{end}}}]},
+	                  	{load_definitions, "/etc/rabbitmq/rabbitmq-definitions.json"}
+		]}
+	].

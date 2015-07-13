@@ -8,10 +8,11 @@ containers = [
     	"build_dir"=>".",
     	"ports" => [],
     	"env" => { 
+                    "RABBITMQ_NODENAME" => "rabbit01",
     	            "RABBITMQ_USER" => "rabbit",
     	            "RABBITMQ_PASSWORD" => "rabbit", 
     	            "RABBITMQ_VHOST" => "/demo", 
-    	            "ERLANG_COOKIE" => "rabbit",
+    	            "ERLANG_COOKIE" => "thisisatestsecret",
     	            "RABBITMQ_CLUSTER_NODES" => "[rabbit@rabbit02]",
     	},
     },
@@ -23,7 +24,7 @@ containers = [
                         "RABBITMQ_USER" => "rabbit",
                         "RABBITMQ_PASSWORD" => "rabbit", 
                         "RABBITMQ_VHOST" => "/demo", 
-                        "ERLANG_COOKIE" => "rabbit",
+    	                "ERLANG_COOKIE" => "thisisatestsecret",
                         "RABBITMQ_CLUSTER_NODES" => "[rabbit@rabbit01]",
             },
       "links" => ["rabbit01:rabbit01",]

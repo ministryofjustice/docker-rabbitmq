@@ -1,0 +1,21 @@
+{
+"users": [
+    {{ range gets "/rabbitmq/management/users/*" }}{{ .Value }},
+    {{end}}],
+"vhosts": [
+    {{ range gets "/rabbitmq/management/vhosts/*" }}{{ .Value }},
+    {{end}}],
+"policies": [
+    {{ range gets "/rabbitmq/management/policies/*" }}{{ .Value }},
+    {{end}}],
+"permissions": [
+    {{ range gets "/rabbitmq/management/permissions/*" }}{{ .Value }},
+    {{end}}],
+"queues": [
+    {{ range gets "/rabbitmq/management/queues/*" }}{{ .Value }},
+    {{end}}],
+"exchanges": [
+    {{ range gets "/rabbitmq/management/exchanges/*" }}{{ .Value }},
+    {{end}}],
+}
+
