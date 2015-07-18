@@ -5,7 +5,6 @@ set -e
 # USER DEFINED SETTINGS
 ################################################################################
 
-# The docker image name that will be created
 if [ -z $1 ];then
 	echo Please pass an image name to create as the first argument
 	exit 1
@@ -14,22 +13,35 @@ if [ -z $2 ];then
 		echo Please pass a registry name to push to as the second argument
 		exit 1
 fi
-IMAGE=$1
-REGISTRY=$2
 
+###### DOCKER SETTINGS #####
+# The docker image name that will be created
+IMAGE=$1
+# The registry to push to
+REGISTRY=$2
 # The path to the dockerfile to use
 DOCKERFILE="Dockerfile"
 
-# Set to true/false to enable or disable the jenkins build
-if [ -z ENABLE_JENKINS ]; then
-	ENABLE_JENKINS=false
-fi
-# Set to true/false to push to the registry
-if [ -z ENABLE_PUSH ]; then
-	ENABLE_PUSH=false
-fi
+###### BUILD PLATFORM SETTINGS #####
+# Set to true to enable the jenkins build parameters
+#ENABLE_JENKINS=true
+# Set to true to push to the registry
+#ENABLE_PUSH=true
+# Set to enable boot2docker specific settings
+#ENABLE_BOOT2DOCKER=true
+
+###### UNIT TESTING SETTINGS #####
+# The port to test container connection when up
+TEST_PORT=5672
+# The response expected from an up container on the test port
+TEST_RESPONSE="AMQP"
+# The delay time before attempting to contact the container
+TEST_DELAY=30
 
 ################################################################################
+# BUILD CONTAINER
+################################################################################
+
 # Construct default versioning and tagging from git details
 if [ "${ENABLE_JENKINS}" = "true" ]; then
 	echo Enabling jenkins build...
@@ -64,9 +76,33 @@ echo Setting APP_VERSION=${APP_VERSION} APP_GIT_COMMIT=${GIT_COMMIT} APP_BUILD_D
 echo Building docker image ${REGISTRY}/${IMAGE}:${BUILD_TAG}
 docker build --pull -f ${DOCKERFILE} -t ${REGISTRY}/${IMAGE}:${BUILD_TAG} .
 
-# TODO : unit tests against the container?
 docker tag -f  ${REGISTRY}/${IMAGE}:${BUILD_TAG} ${REGISTRY}/${IMAGE}:latest
 
+################################################################################
+# UNIT TEST CONTAINER
+################################################################################
+echo Starting the container for unit testing...
+CONTAINER_ID=$(docker run -d -p ${TEST_PORT}:${TEST_PORT} ${REGISTRY}/${IMAGE})
+sleep ${TEST_DELAY}
+
+if [ -z ${ENABLE_BOOT2DOCKER} ]; then
+    IPADDRESS=$(docker inspect  --format='{{.NetworkSettings.IPAddress}}' ${CONTAINER_ID})
+else
+    IPADDRESS=$(boot2docker ip)
+fi
+echo Testing container connection on ${IPADDRESS}:${TEST_PORT} for response ${TEST_RESPONSE}...
+RESULT=$(curl -s -I ${IPADDRESS}:${TEST_PORT} | grep -a ${TEST_RESPONSE})
+
+echo Removing the test container...
+docker rm -f ${CONTAINER_ID}
+
+if [ "x${RESULT}" = "x" ]; then
+    echo Failed to contact container, exiting...
+    exit 1
+fi
+################################################################################
+# PUSH CONTAINER TO REGISTRY
+################################################################################
 if [ "${ENABLE_PUSH}" = "true" ]; then
 	echo Pushing docker image ${REGISTRY}/${IMAGE}:${BUILD_TAG}
 	# Push images to registry
