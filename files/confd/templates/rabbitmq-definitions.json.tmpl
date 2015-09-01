@@ -17,5 +17,8 @@
 "exchanges": [
     {{ range gets "/rabbitmq/management/exchanges/*" }}{{ .Value }},
     {{end}}],
+"bindings": [
+    {{ range gets "/rabbitmq/management/bindings/*" }}{{ .Value }},
+    {{end}}],
 }
 

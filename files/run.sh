@@ -15,16 +15,8 @@ until confd -onetime -backend ${backend}; do
 done
 
 echo "[{$name}] starting service..."
-service ${service} start
-
+    service ${service} restart
 sleep 5
-
-echo "[${name}] Initial cluster_status."
-rabbitmqctl cluster_status &
-echo "[${name}] Initial vhosts."
-rabbitmqctl list_vhosts &
-echo "[${name}] Initial users."
-rabbitmqctl list_users &
 
 # Follow the logs to allow the script to continue running
 tail -f /var/log/${name}/*.log

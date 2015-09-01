@@ -26,5 +26,5 @@ mode = "0644"
 # These are the commands that will be used to check whether the rendered config is
 # valid and to reload the actual service once the new config is in place
 #check_cmd = ""
-reload_cmd = "/usr/sbin/service rabbitmq-server reload"
+reload_cmd = "service rabbitmq-server restart; rabbitmqctl stop_app; rabbitmqctl reset; rabbitmqctl start_app;"
 

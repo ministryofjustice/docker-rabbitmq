@@ -79,27 +79,10 @@ docker build --pull -f ${DOCKERFILE} -t ${REGISTRY}/${IMAGE}:${BUILD_TAG} .
 docker tag -f  ${REGISTRY}/${IMAGE}:${BUILD_TAG} ${REGISTRY}/${IMAGE}:latest
 
 ################################################################################
-# UNIT TEST CONTAINER
+# INTEGRATION TESTS
 ################################################################################
-echo Starting the container for unit testing...
-CONTAINER_ID=$(docker run -d -p ${TEST_PORT}:${TEST_PORT} ${REGISTRY}/${IMAGE})
-sleep ${TEST_DELAY}
+$(pwd)/scripts/runTests.sh 120
 
-if [ -z ${ENABLE_BOOT2DOCKER} ]; then
-    IPADDRESS=$(docker inspect  --format='{{.NetworkSettings.IPAddress}}' ${CONTAINER_ID})
-else
-    IPADDRESS=$(boot2docker ip)
-fi
-echo Testing container connection on ${IPADDRESS}:${TEST_PORT} for response ${TEST_RESPONSE}...
-RESULT=$(curl -s -I ${IPADDRESS}:${TEST_PORT} | grep -a ${TEST_RESPONSE})
-
-echo Removing the test container...
-docker rm -f ${CONTAINER_ID}
-
-if [ "x${RESULT}" = "x" ]; then
-    echo Failed to contact container, exiting...
-    exit 1
-fi
 ################################################################################
 # PUSH CONTAINER TO REGISTRY
 ################################################################################

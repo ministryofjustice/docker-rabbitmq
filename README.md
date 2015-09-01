@@ -70,6 +70,16 @@ There is also a series of more advanced environment variables possible to allow 
 
 	RABBITMQ_MANAGEMENT_EXCHANGES_exchange1='{"name":"exchange1","vhost":"vhost1","type":"topic","durable":true,"auto_delete":false,"internal":false,"arguments":{}}'
 
+	-e  \
+
+#####RABBITMQ\_MANAGEMENT\_QUEUES\_*
+
+	RABBITMQ_MANAGEMENT_QUEUES_haqueue1='{"name":"haqueue1, "vhost":"vhost1", "durable":true, "auto_delete":false, "arguments":{"x-dead-letter-exchange":"haqueue1-retry-requeue", "x-message-ttl":300000}}"'
+	
+#####RABBITMQ\_MANAGEMENT\_BINDINGS\_*
+
+	RABBITMQ_MANAGEMENT_BINDINGS_bindings1='{"source":"exchange1", "vhost":"vhost1", "destination":"haqueue1", "destination_type":"queue", "routing_key":"testkey", "arguments":{}}'
+	
 --------------------------------------------------------------------------------
 ## Code Example
 
