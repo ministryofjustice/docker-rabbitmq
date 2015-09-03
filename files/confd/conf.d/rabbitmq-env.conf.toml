@@ -11,6 +11,7 @@ dest = "/etc/rabbitmq/rabbitmq-env.conf"
 # the template will come from.
 keys = [ 
 	"/rabbitmq/nodename",
+	"/rabbitmq/use/longname",
 ]
 
 # File ownership and mode information

@@ -1,1 +1,2 @@
 {{if exists "/rabbitmq/nodename"}}NODENAME={{getv "/rabbitmq/nodename"}}{{end}}
+{{if exists "/rabbitmq/use/longname"}}RABBITMQ_USE_LONGNAME={{getv "/rabbitmq/use/longname"}}{{end}}

@@ -5,13 +5,18 @@ set -x
 # User settings                                                                #
 ################################################################################
 
-RABBITMQ_IMAGE="registry.service.dsd.io/rabbitmq"
+if [ -z $1 ]; then
+	RABBITMQ_IMAGE="registry.service.dsd.io/rabbitmq"
+else
+	RABBITMQ_IMAGE=$1
+fi
+
 DOCKER_IP=localhost
 #DOCKER_IP=$(boot2docker ip)
-if [ -z $1 ]; then
+if [ -z $2 ]; then
 	STARTUP_DELAY=30
 else
-	STARTUP_DELAY=$1
+	STARTUP_DELAY=$2
 fi
 
 ################################################################################
