@@ -8,6 +8,11 @@ backend=env
 
 echo "[${name}] booting container."
 
+# Detect any cluster nodes variable 
+if [ ! -z ${CLUSTER_NODES} ] && [ -z ${RABBITMQ_CLUSTER_NODES}]; then
+	export RABBITMQ_CLUSTER_NODES=${CLUSTER_NODES}
+fi
+
 # Try to make initial configuration every 5 seconds until successful
 until confd -onetime -backend ${backend}; do
     echo "[${name}] confd creating initial configuration."
