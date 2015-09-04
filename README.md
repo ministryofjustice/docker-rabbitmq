@@ -8,6 +8,8 @@ A docker container that is highly configurable with environment variables
 
 [Environment Variables](#environment-variables)
 
+[Clustering](#clustering)
+
 [Advanced Environment Variables](#advanced-environment-variables)
 
 [Code Example](#code-example)
@@ -38,6 +40,31 @@ Simple variables are easy to pass into the container for use by rabbitmq
 
 #####RABBITMQ\_NODENAME
 - default: 'hostname'
+
+--------------------------------------------------------------------------------
+##Clustering
+
+Clustering can be setup by passing the RABBITMQ\_CLUSTER\_NODES or CLUSTER\_NODES\_SAFE environment variables as a list, for example
+
+		RABBITMQ_CLUSTER_NODES=[ 'rabbit@ip-10-0-0-43', 'rabbit@ip-10-0-22-37' ]  
+	
+These are injected directly into rabbitmq.config. Note that clustering relies on,
+
+* The hostname being equal to the node name. This is commonly done by setting the hostname so that something like the below would set up clustering automatically.
+
+
+		hostname -s # Should output ip-10-0-0-43 on the corresponding node
+		
+		# On the host machine
+		docker run --name rabbitmq --hostname ip-10.0.0.43 -e CLUSTER_NODES=[ 'rabbit@ip-10-0-0-16', 'rabbit@ip-10-0-22-37' ] rabbitmq 
+
+* The nodes addresses **must** be resolvable
+
+		ping ip-10-0-0-43 
+
+* The erlang cookie must be equal on all clustering nodes
+
+		curl /var/lib/rabbitmq/.erlang_cookie
 
 --------------------------------------------------------------------------------
 ##Advanced Environment Variables

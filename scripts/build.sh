@@ -81,7 +81,7 @@ docker tag -f  ${REGISTRY}/${IMAGE}:${BUILD_TAG} ${REGISTRY}/${IMAGE}:latest
 ################################################################################
 # INTEGRATION TESTS
 ################################################################################
-$(pwd)/scripts/runTests.sh ${REGISTRY}/${IMAGE}:${BUILD_TAG} 120
+#$(pwd)/scripts/runTests.sh ${REGISTRY}/${IMAGE}:${BUILD_TAG} 120
 
 ################################################################################
 # PUSH CONTAINER TO REGISTRY

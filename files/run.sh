@@ -9,9 +9,9 @@ backend=env
 echo "[${name}] booting container."
 
 # Detect any cluster nodes variable 
-if [ -z ${RABBITMQ_CLUSTER_NODES}]; then
-    if [ ! -z ${CLUSTER_NODES_SAFE} ]; then
-	    export RABBITMQ_CLUSTER_NODES=${CLUSTER_NODES_SAFE}
+if [ -z "${RABBITMQ_CLUSTER_NODES}" ]; then
+    if [ ! -z "${CLUSTER_NODES_SAFE}" ]; then
+	    export RABBITMQ_CLUSTER_NODES="${CLUSTER_NODES_SAFE}"
 	fi
 fi
 
